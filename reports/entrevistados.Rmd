@@ -9,6 +9,8 @@ knitr::opts_chunk$set(echo = TRUE)
 library(tidyverse)
 library(here)
 library(lubridate)
+library(psych)
+library(psy)
 theme_set(theme_bw())
 
 ```
@@ -31,11 +33,22 @@ desenvolvedores = desenvolvedores %>%
 ```{r}
 
 desenvolvedores %>%
-    summarise(media_idade = mean(Age), desvio_idade = sd(Age), 
+    summarise(media_idade = mean(Age), desvio_idade = sd(Age), mediana_idade = median(Age),
               media_experience_soft_dev = mean(experience_soft_dev), 
-              desvio_experience_soft_dev = sd(experience_soft_dev), 
+              desvio_experience_soft_dev = sd(experience_soft_dev),
+              mediana_experience_soft_dev = median(experience_soft_dev),
               media_experience_agile_dev = mean(experience_agile_dev), 
-              desvio_experience_agile_dev = sd(experience_agile_dev))
+              desvio_experience_agile_dev = sd(experience_agile_dev),
+              mediana_experience_agile_dev = median(experience_agile_dev))
+
+```
+
+#Teste Alpha de Cronbach
+
+```{r}
+desenvolvedores %>%
+    summarise(alpha = cronbach(desenvolvedores))
+
 
 ```
 

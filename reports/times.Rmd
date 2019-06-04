@@ -31,6 +31,9 @@ times = times %>%
 ```{r}
 
 times %>%
-    summarise(media_teamsize = mean(team_size), desvio_teamsize = sd(team_size), media_sprintize = mean(sprint_size), desvio_sprintsize = sd(sprint_size))
+    summarise(media_teamsize = mean(team_size), desvio_teamsize = sd(team_size),
+              mediana_teamsize = median(team_size), 
+              media_sprintize = mean(sprint_size), desvio_sprintsize = sd(sprint_size),
+              mediana_sprintize = median(sprint_size))
 
 ```
