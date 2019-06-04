@@ -1,0 +1,52 @@
+---
+title: "R Notebook"
+output: html_notebook
+---
+
+```{r setup, include=FALSE, message=FALSE}
+
+knitr::opts_chunk$set(echo = TRUE)
+library(tidyverse)
+library(here)
+library(lubridate)
+theme_set(theme_bw())
+
+```
+
+## Os dados
+
+```{r}
+
+desenvolvedores = read_csv(here::here("data/dados_desenvolvedores.csv"))
+
+desenvolvedores = desenvolvedores %>%
+    rename(
+        experience_soft_dev = `Years of experience with software development`,
+        experience_agile_dev = `Years of experience with agile development`,
+        project_name = `Project Name`
+    )
+
+```
+
+```{r}
+
+desenvolvedores %>%
+    summarise(media_idade = mean(Age), desvio_idade = sd(Age), 
+              media_experience_soft_dev = mean(experience_soft_dev), 
+              desvio_experience_soft_dev = sd(experience_soft_dev), 
+              media_experience_agile_dev = mean(experience_agile_dev), 
+              desvio_experience_agile_dev = sd(experience_agile_dev))
+
+```
+
+```{r}
+
+desenvolvedores %>%
+    group_by(project_name)%>%
+    summarise(media_idade = mean(Age), desvio_idade = sd(Age), 
+              media_experience_soft_dev = mean(experience_soft_dev), 
+              desvio_experience_soft_dev = sd(experience_soft_dev), 
+              media_experience_agile_dev = mean(experience_agile_dev), 
+              desvio_experience_agile_dev = sd(experience_agile_dev))
+
+```
