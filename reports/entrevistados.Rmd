@@ -124,20 +124,22 @@ desenvolvedores = desenvolvedores %>%
 
 ```{r}
 
-desenvolvedores %>%
+means = desenvolvedores %>%
   group_by(project_name)%>%
   summarise(communication_mean = mean(communication), coordination_mean = mean(coordination), mutual_support_mean = mean(mutual_support),
             effort_mean = mean(effort), cohesion_mean = mean(cohesion), contribution_mean = mean(contribution),
             work_satisfaction_mean = mean(work_satisfaction), learning_mean = mean(learning), effectiveness_mean = mean(effectiveness),
             efficiency_mean = mean(efficiency))
+means
 
 ```
 
 #Teste Alpha de Cronbach
 
 ```{r}
-desenvolvedores %>%
-    summarise(alpha = cronbach(desenvolvedores))
+alfa <- alpha(means)
+
+alfa
 
 
 ```
