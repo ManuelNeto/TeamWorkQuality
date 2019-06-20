@@ -21,10 +21,11 @@ theme_set(theme_bw())
 
 ```{r}
 
-desenvolvedores = read_csv(here::here("data/Teamwork Quality (respostas) - Respostas ao formulário 1.csv"))
+desenvolvedores = read_csv(here::here("data/Teamwork Quality (respostas) - Respostas ao formulário 1 (1).csv"))
 
 desenvolvedores = desenvolvedores %>%
     rename(
+        role = `Your Role`,
         experience_soft_dev = `Years of experience with software development`,
         experience_agile_dev = `Years of experience with agile development`,
         project_name = `Project Name`,
@@ -128,10 +129,20 @@ desenvolvedores = desenvolvedores %>%
 
 means = desenvolvedores %>%
   group_by(project_name)%>%
-  summarise(communication_mean = mean(communication), coordination_mean = mean(coordination), mutual_support_mean = mean(mutual_support),
-            effort_mean = mean(effort), cohesion_mean = mean(cohesion), contribution_mean = mean(contribution),
-            work_satisfaction_mean = mean(work_satisfaction), learning_mean = mean(learning), effectiveness_mean = mean(effectiveness),
-            efficiency_mean = mean(efficiency))
+  summarise(communication_mean = mean(communication), 
+            coordination_mean = mean(coordination), 
+            mutual_support_mean = mean(mutual_support),
+            effort_mean = mean(effort), 
+            cohesion_mean = mean(cohesion), 
+            contribution_mean = mean(contribution),
+            work_satisfaction_mean = mean(work_satisfaction), 
+            learning_mean = mean(learning), 
+            effectiveness_mean_team = mean(effectiveness),
+            efficiency_mean_team = mean(efficiency),
+            effectiveness_mean_TL = mean(effectiveness[role == 'Technical Lead']),
+            efficiency_mean_TL = mean(efficiency[role == 'Technical Lead']),
+            effectiveness_mean_M = mean(effectiveness[role == 'Manager']),
+            efficiency_mean_M = mean(efficiency[role == 'Manager']))
 means
 
 ```
@@ -142,6 +153,7 @@ means
 alfa <- alpha(means, check.keys=TRUE)
 
 alfa
+
 
 
 ```
@@ -158,13 +170,19 @@ model <- '  #model
                         effort_mean + 
                         cohesion_mean + 
                         contribution_mean
-            performance =~ effectiveness_mean + efficiency_mean
+            performance_team =~ effectiveness_mean_team + efficiency_mean_team
+            performance_TL =~ effectiveness_mean_TL + efficiency_mean_TL
+            performance_M =~ effectiveness_mean_M + efficiency_mean_M
             #regressão
-            performance ~ teamWork
+            performance_team ~ teamWork
+            performance_TL ~ teamWork
+            performance_M ~teamWork
+            # residual correlations
+            cohesion_mean ~~ contribution_mean
 '
                          
 
-fit <- sem(model, data = means)
+fit <- sem(model = model, data = means, verbose = TRUE, optim.method = "em")
 summary(fit, standardized=TRUE)
 
 ```
@@ -186,7 +204,7 @@ model <- '
     y4 ~~ y8
     y6 ~~ y8
 '
-fit <- sem(model, data=PoliticalDemocracy)
+fit <- sem(model, data=PoliticalDemocracy[1:10, ])
 summary(fit, standardized=TRUE)
 
 ```
