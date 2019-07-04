@@ -21,7 +21,7 @@ theme_set(theme_bw())
 
 ```{r}
 
-desenvolvedores = read_csv(here::here("data/Base de bados para teste Teamwork Quality (respostas) - Respostas ao formulário 1.csv"))
+desenvolvedores = read_csv(here::here("data/Base de bados para teste Teamwork Quality (respostas) - Respostas ao formulário 1 (1).csv"))
 
 desenvolvedores = desenvolvedores %>%
     rename(
@@ -280,7 +280,120 @@ model <- '  #model
 #fit <- sem(model = model, data = means, verbose = TRUE, optim.method = "em")
 #summary(fit, standardized=TRUE)
 
-fit <- sem(model, data=means[1:21, ])
+fit <- sem(model, data=means, orthogonal=TRUE)
+lavInspect(fit, "theta")
+summary(fit, standardized=TRUE)
+
+```
+```{r}
+
+model <- '  #model
+            teamWork =~ communication_mean +
+                        coordination_mean + 
+                        mutual_support_mean + 
+                        effort_mean + 
+                        cohesion_mean + 
+                        contribution_mean
+            performance_team =~ effectiveness_mean_team + efficiency_mean_team
+              
+            #regressão
+            performance_team ~ teamWork
+            
+            # residual correlations
+            communication_mean ~~ coordination_mean
+            communication_mean ~~ mutual_support_mean
+            communication_mean ~~ effort_mean
+            communication_mean ~~ cohesion_mean
+            communication_mean ~~ contribution_mean
+            communication_mean ~~ effectiveness_mean_team
+            communication_mean ~~ efficiency_mean_team
+            coordination_mean  ~~ mutual_support_mean
+            coordination_mean  ~~ effort_mean
+            coordination_mean  ~~ cohesion_mean
+            coordination_mean  ~~ contribution_mean
+            coordination_mean  ~~ effectiveness_mean_team
+            coordination_mean  ~~ efficiency_mean_team
+            mutual_support_mean ~~ effort_mean
+            mutual_support_mean ~~ cohesion_mean
+            mutual_support_mean ~~ contribution_mean 
+            mutual_support_mean ~~ effectiveness_mean_team
+            mutual_support_mean ~~ efficiency_mean_team
+            effort_mean ~~ cohesion_mean
+            effort_mean ~~ contribution_mean
+            effort_mean ~~ effectiveness_mean_team
+            effort_mean ~~ efficiency_mean_team
+            cohesion_mean ~~ contribution_mean
+            cohesion_mean ~~ effectiveness_mean_team
+            cohesion_mean ~~ efficiency_mean_team
+            contribution_mean ~~ effectiveness_mean_team
+            contribution_mean ~~ efficiency_mean_team
+        
+            effectiveness_mean_team ~~ efficiency_mean_team
+              
+'
+                         
+
+#fit <- sem(model = model, data = means, verbose = TRUE, optim.method = "em")
+#summary(fit, standardized=TRUE)
+
+fit <- sem(model, data=means, orthogonal=TRUE)
+lavInspect(fit, "theta")
+summary(fit, standardized=TRUE)
+
+```
+
+```{r}
+
+model <- '  #model
+            teamWork =~ communication +
+                        coordination + 
+                        mutual_support + 
+                        effort + 
+                        cohesion + 
+                        contribution
+            performance_team =~ effectiveness + efficiency
+            personal_sucess =~ work_satisfaction + learning
+              
+            #regressão
+            personal_sucess ~ teamWork
+            performance_team ~ teamWork
+            
+           
+              
+'
+
+fit <- sem(model, data=desenvolvedores, likelihood = "wishart")
+#lavInspect(fit, "theta")
+inspect(fit,what="std")
+#summary(fit, standardized=TRUE)
+
+```
+
+```{r}
+
+model <- '  #model
+            teamWork =~ communication_mean +
+                        coordination_mean + 
+                        mutual_support_mean + 
+                        effort_mean + 
+                        cohesion_mean + 
+                        contribution_mean
+            performance_team =~ effectiveness_mean_team + efficiency_mean_team
+            performance_TL =~ effectiveness_mean_TL + efficiency_mean_TL
+            performance_M =~ effectiveness_mean_M + efficiency_mean_M
+            personal_sucess =~ work_satisfaction_mean + learning_mean
+              
+            #regressão
+            personal_sucess ~ teamWork
+            performance_team ~ teamWork
+            performance_TL ~ teamWork
+            performance_M ~teamWork
+
+'
+
+fit <- sem(model, data=means[1:24, ], likelihood = "wishart")
+fitted(fit)
+lavInspect(fit, what="std")
 summary(fit, standardized=TRUE)
 
 ```
